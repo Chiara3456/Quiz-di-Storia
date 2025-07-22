@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quiz di Storia - Prima Media</title>
   <style>
-     body {
+    body {
       font-family: Arial, sans-serif;
       background: #000000 ;
       color: #ffffff;
@@ -68,14 +68,31 @@
   </style>
 </head>
 <body>
-  <!-- Musica di sottofondo -->
-  <audio id="bg-music" loop>
-    <source src="battle.mp3" type="audio/mpeg" />
-  </audio>
-  <button onclick="document.getElementById('bg-music').play()">Ascolta la musica</button>
+  <!-- Musica di sottofondo: -->
+ <audio id="bg-music" loop>
+  <source src="battle.mp3" type="audio/mpeg" />
+  Il tuo browser non supporta l'audio HTML5.
+</audio>
 
+<button
+  onclick="document.getElementById('bg-music').play()"
+  style="
+    display: block;
+    margin: 20px auto;
+    padding: 15px 40px;
+    font-size: 18px;
+    background-color: pink;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  "
+>
+  Ascolta la musica
+</button>
   <header>
     <h1>Quiz di Storia</h1>
+    <!-- Inserisci qui la tua immagine iniziale (sostituisci immagine.jpg con il tuo file) -->
     <img src="Teodora.jpeg" alt="Immagine introduttiva" />
     <button class="start-button" onclick="startQuiz()">Inizia il Quiz</button>
   </header>
@@ -88,10 +105,9 @@
   </div>
 
   <script>
-    // Dati del quiz
     const quizData = [
-      // (Tutte le domande così come nel tuo codice originale)
-       { question: "Quale riforma è stata introdotta da Diocleziano?", options: ["Divisione dell'Impero in Tetrarchia", "Diffusione del Cristianesimo", "Fondazione dell'Impero Carolingio"], correct: 0, explanation: "Diocleziano introdusse la Tetrarchia, dividendo l'Impero in 4 parti governate da due Augusti e due Cesari." },
+      // (Tutte le domande così come nel tuo codice, le includo uguali per brevità)
+      { question: "Quale riforma è stata introdotta da Diocleziano?", options: ["Divisione dell'Impero in Tetrarchia", "Diffusione del Cristianesimo", "Fondazione dell'Impero Carolingio"], correct: 0, explanation: "Diocleziano introdusse la Tetrarchia, dividendo l'Impero in 4 parti governate da due Augusti e due Cesari." },
       { question: "Chi fu Costantino?", options: ["Un imperatore romano che legalizzò il Cristianesimo", "Un re dei Franchi", "Fondatore del monachesimo"], correct: 0, explanation: "Costantino fu l'imperatore romano che con l'Editto di Milano (313 d.C.) legalizzò il Cristianesimo." },
       { question: "Quale imperatore rese il Cristianesimo religione ufficiale dell'Impero?", options: ["Diocleziano", "Teodosio", "Giustiniano"], correct: 1, explanation: "Teodosio I rese il Cristianesimo religione ufficiale dell'Impero nel 380 d.C." },
       { question: "Chi erano i Germani?", options: ["Popoli dell'Europa settentrionale e centrale che invasero l'Impero Romano", "Popoli nomadi dell'Asia", "Fondatori dell'Impero Arabo"], correct: 0, explanation: "I Germani erano popoli barbarici che invasero varie zone dell'Impero Romano, contribuendo alla sua caduta." },
@@ -148,118 +164,161 @@
       { question: "Cos'è la 'curtis'?", options: ["Grande proprietà agricola nell'Impero Carolingio", "Una città araba", "Un tipo di regola monastica"], correct: 0, explanation: "La curtis era la grande azienda agricola su cui si basava l'economia medievale." },
       { question: "Quale popolo germanico fondò il Regno dei Franchi?", options: ["I Franchi", "I Longobardi", "I Visigoti"], correct: 0, explanation: "I Franchi erano un popolo germanico che fondò un regno in Europa occidentale." },
       { question: "Qual era la lingua ufficiale nell'Impero Carolingio?", options: ["Il latino", "Il greco", "L'arabo"], correct: 0, explanation: "Il latino era la lingua ufficiale dell'Impero Carolingio, usata per la cultura e la religione." }
-
     ];
 
     const questionsPerPage = 10;
     let currentPage = 0;
     let answers = [];
 
-    function shuffleArray(array) {
-      return array
-        .map(value => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value);
-    }
+  const quizContainer = document.getElementById("quiz-container");
+  const quizForm = document.getElementById("quizForm");
+  const nextBtn = document.querySelector(".next-button");
+  const submitBtn = document.querySelector(".submit-button");
+  const resultDiv = document.getElementById("result");
+  const startBtn = document.querySelector(".start-button");
+  const header = document.querySelector("header");
 
-    function startQuiz() {
-      document.querySelector('.start-button').style.display = 'none';
-      document.querySelector('header img').style.display = 'none';
-      document.getElementById('quiz-container').style.display = 'block';
-      renderPage();
-    }
+  function startQuiz() {
+    startBtn.style.display = "none";
+    header.querySelector("img").style.display = "none";
+    quizContainer.style.display = "block";
+    renderPage();
+  }
 
+  function shuffleArray(array) {
+    return array
+      .map(value => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+  }
     function renderPage() {
-      const quizForm = document.getElementById('quizForm');
-      quizForm.innerHTML = '';
-      document.getElementById('result').innerHTML = '';
-      const start = currentPage * questionsPerPage;
-      const end = Math.min(start + questionsPerPage, quizData.length);
-      const pageQuestions = quizData.slice(start, end);
+  quizForm.innerHTML = "";
+  resultDiv.innerHTML = "";
+  const start = currentPage * questionsPerPage;
+  const end = Math.min(start + questionsPerPage, quizData.length);
+  const pageQuestions = quizData.slice(start, end);
 
-      pageQuestions.forEach((q, idx) => {
-        const questionNumber = start + idx + 1;
-        const div = document.createElement('div');
-        div.classList.add('question');
+  pageQuestions.forEach((q, i) => {
+    const questionNumber = start + i + 1;
+    const div = document.createElement("div");
+    div.classList.add("question");
 
-        // Mescola le opzioni tenendo traccia dell'indice originale
-        let optionsWithIndex = q.options.map((opt, i) => ({ text: opt, originalIndex: i }));
-        optionsWithIndex = shuffleArray(optionsWithIndex);
+    // 1. Prepara e mescola le opzioni
+    let optionsWithIndex = q.options.map((opt, idx) => ({
+      text: opt,
+      index: idx
+    }));
+    optionsWithIndex = shuffleArray(optionsWithIndex);
 
-        // Trova l'indice della risposta corretta dopo lo shuffle
-        const shuffledCorrectIndex = optionsWithIndex.findIndex(o => o.originalIndex === q.correct);
-        quizData[start + idx].shuffledCorrectIndex = shuffledCorrectIndex;
+    // 2. Salva dove è finita la risposta giusta
+    quizData[start + i].shuffledCorrectIndex =
+  optionsWithIndex.findIndex(o => o.index === q.correct);
+    
+    // 3. Costruisci l’HTML delle opzioni
+    const optionsHtml = optionsWithIndex
+      .map((opt, newIdx) => `
+        <label>
+          <input 
+            type="radio" 
+            name="q${questionNumber}" 
+            value="${newIdx}" 
+            required 
+          />
+          ${opt.text}
+        </label>
+      `)   // ← back‑tick di apertura
+      .join("");
+// 4)
+   div.innerHTML = `
+      <h3>Domanda ${questionNumber}: ${q.question}</h3>
+      ${optionsHtml}
+    `;    // ← back‑tick di chiusura
 
-        // Costruisci l'HTML delle opzioni
-        const optionsHtml = optionsWithIndex.map((opt, newIdx) => (
-          `<label>
-            <input type="radio" name="q${questionNumber}" value="${newIdx}" required /> ${opt.text}
-          </label>`
-        )).join('');
+    quizForm.appendChild(div);
+  });
 
-        div.innerHTML = `<h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml}`;
-        quizForm.appendChild(div);
-      });
+  // 5. Mostra “Next” o “Submit” a seconda della pagina
+  if ((currentPage + 1) * questionsPerPage >= quizData.length) {
+    nextBtn.style.display = "none";
+    submitBtn.style.display = "block";
+  } else {
+    nextBtn.style.display = "block";
+    submitBtn.style.display = "none";
+  }
+}
 
-      const nextBtn = document.querySelector('.next-button');
-      const submitBtn = document.querySelector('.submit-button');
-      if ((currentPage + 1) * questionsPerPage >= quizData.length) {
-        nextBtn.style.display = 'none';
-        submitBtn.style.display = 'block';
-      } else {
-        nextBtn.style.display = 'block';
-        submitBtn.style.display = 'none';
-      }
-    }
 
     function validateAnswers() {
-      const start = currentPage * questionsPerPage;
-      const end = Math.min(start + questionsPerPage, quizData.length);
-      for (let i = start + 1; i <= end; i++) {
-        const radios = document.getElementsByName(`q${i}`);
-        if (![...radios].some(r => r.checked)) {
-          alert(`Per favore, rispondi alla domanda ${i}.`);
-          return false;
-        }
+  const start = currentPage * questionsPerPage;
+  const end = Math.min(start + questionsPerPage, quizData.length);
+
+  for(let i = start + 1; i <= end; i++) {
+    const radios = document.getElementsByName(q${i});
+    const answered = [...radios].some(radio => radio.checked);
+    if (!answered) {
+      alert(Per favore, rispondi alla domanda ${i}.);
+      return false;
+    }
+  }
+  return true;
+}
+
+
+function nextPage() {
+  if (!validateAnswers()) return;
+
+  // Salva le risposte della pagina corrente
+  const start = currentPage * questionsPerPage;
+  const end = Math.min(start + questionsPerPage, quizData.length);
+  for(let i = start + 1; i <= end; i++) {
+    const radios = document.getElementsByName(q${i});
+    radios.forEach(radio => {
+      if (radio.checked) {
+        answers[i - 1] = parseInt(radio.value);
       }
-      return true;
-    }
+    });
+  }
 
-    function saveAnswers() {
-      const start = currentPage * questionsPerPage;
-      const end = Math.min(start + questionsPerPage, quizData.length);
-      for (let i = start + 1; i <= end; i++) {
-        const radios = document.getElementsByName(`q${i}`);
-        radios.forEach(r => { if (r.checked) answers[i - 1] = parseInt(r.value); });
+  currentPage++;
+  renderPage();
+}
+
+function submitQuiz() {
+  if (!validateAnswers()) return;
+
+  // Salva le risposte dell'ultima pagina
+  const start = currentPage * questionsPerPage;
+  const end = Math.min(start + questionsPerPage, quizData.length);
+  for(let i = start + 1; i <= end; i++) {
+    const radios = document.getElementsByName(q${i});
+    radios.forEach(radio => {
+      if (radio.checked) {
+        answers[i - 1] = parseInt(radio.value);
       }
+    });
+  }
+
+  let score = 0;
+  let explanations = "";
+
+  for(let i = 0; i < quizData.length; i++) {
+   if(answers[i] === quizData[i].shuffledCorrectIndex) {
+      score++;
+    } else {
+      explanations += <p><strong>Domanda ${i+1}:</strong> ${quizData[i].explanation}</p>;
     }
+  }
 
-    function nextPage() {
-      if (!validateAnswers()) return;
-      saveAnswers();
-      currentPage++;
-      renderPage();
-    }
+  quizForm.style.display = "none";
+  nextBtn.style.display = "none";
+  submitBtn.style.display = "none";
 
-    function submitQuiz() {
-      if (!validateAnswers()) return;
-      saveAnswers();
-
-      let score = 0;
-      let explanations = '';
-      quizData.forEach((q, i) => {
-        if (answers[i] === q.shuffledCorrectIndex) score++;
-        else explanations += `<p><strong>Domanda ${i+1}:</strong> ${q.explanation}</p>`;
-      });
-
-      document.getElementById('quizForm').style.display = 'none';
-      document.querySelector('.next-button').style.display = 'none';
-      document.querySelector('.submit-button').style.display = 'none';
-      document.getElementById('result').innerHTML = 
-        `Hai totalizzato ${score} risposte corrette su ${quizData.length}.` +
-        (score === quizData.length ? '<br>Complimenti, hai risposto correttamente a tutte le domande!' : '') +
-        explanations;
-    }
+  resultDiv.innerHTML = 
+    Hai totalizzato ${score} risposte corrette su ${quizData.length}.
+    ${score === quizData.length ? "<br>Complimenti, hai risposto correttamente a tutte le domande!" : ""}
+    ${explanations}
+  ;
+}
   </script>
 </body>
 </html>
