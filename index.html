@@ -192,57 +192,59 @@
       .map(({ value }) => value);
   }
     function renderPage() {
-      quizForm.innerHTML = "";
-      resultDiv.innerHTML = "";
-      const start = currentPage * questionsPerPage;
-      const end = start + questionsPerPage;
-      const pageQuestions = quizData.slice(start, end);
+  quizForm.innerHTML = "";
+  resultDiv.innerHTML = "";
+  const start = currentPage * questionsPerPage;
+  const end = Math.min(start + questionsPerPage, quizData.length);
+  const pageQuestions = quizData.slice(start, end);
 
-      pageQuestions.forEach((q, i) => {
-  const questionNumber = start + i + 1;
-  const div = document.createElement("div");
-  div.classList.add("question");
+  pageQuestions.forEach((q, i) => {
+    const questionNumber = start + i + 1;
+    const div = document.createElement("div");
+    div.classList.add("question");
 
-  // Prepara opzioni con indice
-  let optionsWithIndex = q.options.map((opt, idx) => ({
-    text: opt,
-    index: idx
-  }));
+    // 1. Prepara e mescola le opzioni
+    let optionsWithIndex = q.options.map((opt, idx) => ({
+      text: opt,
+      index: idx
+    }));
+    optionsWithIndex = shuffleArray(optionsWithIndex);
 
-  // Mischia le opzioni
-  optionsWithIndex = shuffleArray(optionsWithIndex);
+    // 2. Salva dove è finita la risposta giusta
+    quizData[start + i].shuffledCorrectIndex =
+      optionsWithIndex.find(o => o.index === q.correct).index;
 
-  // Salva la nuova posizione della risposta corretta
-  quizData[start + i].shuffledCorrectIndex = optionsWithIndex.find(o => o.index === q.correct).index;
-
-  // Costruisci HTML opzioni
-  let optionsHtml = optionsWithIndex
-    .map(
-      (opt, newIdx) => `
+    // 3. Costruisci l’HTML delle opzioni
+    const optionsHtml = optionsWithIndex
+      .map(
+        (opt, newIdx) => `
       <label>
-        <input type="radio" name="q${questionNumber}" value="${newIdx}" required />
+        <input 
+          type="radio" 
+          name="q${questionNumber}" 
+          value="${newIdx}" 
+          required 
+        />
         ${opt.text}
-      </label>
-    `
-    )
-    .join("");
+      </label>`
+      )
+      .join("");
 
-  div.innerHTML = `<h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml}`;
-  quizForm.appendChild(div);
-});
+    // 4. Inserisci domanda + opzioni nel div e lo appendi
+    div.innerHTML = `<h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml}`;
+    quizForm.appendChild(div);
+  });
 
-        div.innerHTML = `<h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml}`;
-        quizForm.appendChild(div);
-      });
+  // 5. Mostra “Next” o “Submit” a seconda della pagina
+  if ((currentPage + 1) * questionsPerPage >= quizData.length) {
+    nextBtn.style.display = "none";
+    submitBtn.style.display = "block";
+  } else {
+    nextBtn.style.display = "block";
+    submitBtn.style.display = "none";
+  }
+}
 
-      if (currentPage === Math.floor(quizData.length / questionsPerPage)) {
-        nextBtn.style.display = "none";
-        submitBtn.style.display = "block";
-      } else {
-        nextBtn.style.display = "block";
-        submitBtn.style.display = "none";
-      }
-    }
 
     function validateAnswers() {
   const start = currentPage * questionsPerPage;
