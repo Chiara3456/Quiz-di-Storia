@@ -190,7 +190,7 @@
       .map(value => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value);
-  }
+     }
     function renderPage() {
   quizForm.innerHTML = "";
   resultDiv.innerHTML = "";
@@ -244,9 +244,8 @@
     submitBtn.style.display = "none";
   }
 }
-
-
-    function validateAnswers() {
+  
+     function validateAnswers() {
   const start = currentPage * questionsPerPage;
   const end = Math.min(start + questionsPerPage, quizData.length);
 
