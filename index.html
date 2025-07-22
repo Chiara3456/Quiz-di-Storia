@@ -165,97 +165,69 @@
       { question: "Quale popolo germanico fondò il Regno dei Franchi?", options: ["I Franchi", "I Longobardi", "I Visigoti"], correct: 0, explanation: "I Franchi erano un popolo germanico che fondò un regno in Europa occidentale." },
       { question: "Qual era la lingua ufficiale nell'Impero Carolingio?", options: ["Il latino", "Il greco", "L'arabo"], correct: 0, explanation: "Il latino era la lingua ufficiale dell'Impero Carolingio, usata per la cultura e la religione." }
     ];
-
     const questionsPerPage = 10;
     let currentPage = 0;
     let answers = [];
 
-  const quizContainer = document.getElementById("quiz-container");
-  const quizForm = document.getElementById("quizForm");
-  const nextBtn = document.querySelector(".next-button");
-  const submitBtn = document.querySelector(".submit-button");
-  const resultDiv = document.getElementById("result");
-  const startBtn = document.querySelector(".start-button");
-  const header = document.querySelector("header");
+    const quizContainer = document.getElementById("quiz-container");
+    const quizForm = document.getElementById("quizForm");
+    const nextBtn = document.querySelector(".next-button");
+    const submitBtn = document.querySelector(".submit-button");
+    const resultDiv = document.getElementById("result");
+    const startBtn = document.querySelector(".start-button");
+    const header = document.querySelector("header");
 
-  function startQuiz() {
-    startBtn.style.display = "none";
-    header.querySelector("img").style.display = "none";
-    quizContainer.style.display = "block";
-    renderPage();
-  }
+    function startQuiz() {
+      startBtn.style.display = "none";
+      header.querySelector("img").style.display = "none";
+      quizContainer.style.display = "block";
+      renderPage();
+    }
 
-  function shuffleArray(array) {
-    return array
-      .map(value => ({ value, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value);
-     }
     function renderPage() {
-  quizForm.innerHTML = "";
-  resultDiv.innerHTML = "";
-  const start = currentPage * questionsPerPage;
-  const end = Math.min(start + questionsPerPage, quizData.length);
-  const pageQuestions = quizData.slice(start, end);
+      quizForm.innerHTML = "";
+      resultDiv.innerHTML = "";
+      const start = currentPage * questionsPerPage;
+      const end = start + questionsPerPage;
+      const pageQuestions = quizData.slice(start, end);
 
-  pageQuestions.forEach((q, i) => {
-    const questionNumber = start + i + 1;
-    const div = document.createElement("div");
-    div.classList.add("question");
+      pageQuestions.forEach((q, i) => {
+        const questionNumber = start + i + 1;
+        const div = document.createElement("div");
+        div.classList.add("question");
 
-    // 1. Prepara e mescola le opzioni
-    let optionsWithIndex = q.options.map((opt, idx) => ({
-      text: opt,
-      index: idx
-    }));
-    optionsWithIndex = shuffleArray(optionsWithIndex);
+        let optionsHtml = "";
+        q.options.forEach((opt, idx) => {
+          optionsHtml += `
+            <label>
+              <input type="radio" name="q${questionNumber}" value="${idx}" required />
+              ${opt}
+            </label>
+          `;
+        });
 
-    // 2. Salva dove è finita la risposta giusta
-    quizData[start + i].shuffledCorrectIndex =
-      optionsWithIndex.find(o => o.index === q.correct).index;
+        div.innerHTML = `<h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml}`;
+        quizForm.appendChild(div);
+      });
 
-    // 3. Costruisci l’HTML delle opzioni
-    const optionsHtml = optionsWithIndex
-      .map(
-        (opt, newIdx) => 
-          <label>
-            <input 
-              type="radio" 
-              name="q${questionNumber}" 
-              value="${newIdx}" 
-              required 
-            />
-            ${opt.text}
-          </label>
-        
-      )
-  )
-  .join("");
+      if (currentPage === Math.floor(quizData.length / questionsPerPage)) {
+        nextBtn.style.display = "none";
+        submitBtn.style.display = "block";
+      } else {
+        nextBtn.style.display = "block";
+        submitBtn.style.display = "none";
+      }
+    }
 
-    // 4. Inserisci domanda + opzioni nel div e lo appendi
-  div.innerHTML = <h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml};
-    quizForm.appendChild(div);
-  });
-
-  // 5. Mostra “Next” o “Submit” a seconda della pagina
-  if ((currentPage + 1) * questionsPerPage >= quizData.length) {
-    nextBtn.style.display = "none";
-    submitBtn.style.display = "block";
-  } else {
-    nextBtn.style.display = "block";
-    submitBtn.style.display = "none";
-  }
-}
-  
-     function validateAnswers() {
+    function validateAnswers() {
   const start = currentPage * questionsPerPage;
   const end = Math.min(start + questionsPerPage, quizData.length);
 
   for(let i = start + 1; i <= end; i++) {
-   const radios = document.getElementsByName(q${i});
+    const radios = document.getElementsByName(`q${i}`);
     const answered = [...radios].some(radio => radio.checked);
     if (!answered) {
-      alert(Per favore, rispondi alla domanda ${i}.);
+      alert(`Per favore, rispondi alla domanda ${i}.`);
       return false;
     }
   }
@@ -270,7 +242,7 @@ function nextPage() {
   const start = currentPage * questionsPerPage;
   const end = Math.min(start + questionsPerPage, quizData.length);
   for(let i = start + 1; i <= end; i++) {
- const radios = document.getElementsByName(q${i});
+    const radios = document.getElementsByName(`q${i}`);
     radios.forEach(radio => {
       if (radio.checked) {
         answers[i - 1] = parseInt(radio.value);
@@ -289,7 +261,7 @@ function submitQuiz() {
   const start = currentPage * questionsPerPage;
   const end = Math.min(start + questionsPerPage, quizData.length);
   for(let i = start + 1; i <= end; i++) {
-const radios = document.getElementsByName(q${i}));
+    const radios = document.getElementsByName(`q${i}`);
     radios.forEach(radio => {
       if (radio.checked) {
         answers[i - 1] = parseInt(radio.value);
@@ -301,10 +273,10 @@ const radios = document.getElementsByName(q${i}));
   let explanations = "";
 
   for(let i = 0; i < quizData.length; i++) {
-   if(answers[i] === quizData[i].shuffledCorrectIndex) {
+    if(answers[i] === quizData[i].correct) {
       score++;
     } else {
-      explanations += <p><strong>Domanda ${i+1}:</strong> ${quizData[i].explanation}</p>;
+      explanations += `<p><strong>Domanda ${i+1}:</strong> ${quizData[i].explanation}</p>`;
     }
   }
 
@@ -312,12 +284,15 @@ const radios = document.getElementsByName(q${i}));
   nextBtn.style.display = "none";
   submitBtn.style.display = "none";
 
- resultDiv.innerHTML = 
-  Hai totalizzato ${score} risposte corrette su ${quizData.length}.
-  ${score === quizData.length ? "<br>Complimenti, hai risposto correttamente a tutte le domande!" : ""}
-  ${explanations}
-;
+  resultDiv.innerHTML = `
+    Hai totalizzato ${score} risposte corrette su ${quizData.length}.
+    ${score === quizData.length ? "<br>Complimenti, hai risposto correttamente a tutte le domande!" : ""}
+    ${explanations}
+  `;
 }
   </script>
 </body>
 </html>
+
+
+    
