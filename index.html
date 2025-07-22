@@ -212,28 +212,26 @@
 
     // 2. Salva dove è finita la risposta giusta
     quizData[start + i].shuffledCorrectIndex =
-  optionsWithIndex.findIndex(o => o.index === q.correct);
-    
+      optionsWithIndex.find(o => o.index === q.correct).index;
+
     // 3. Costruisci l’HTML delle opzioni
     const optionsHtml = optionsWithIndex
-      .map((opt, newIdx) => `
-        <label>
-          <input 
-            type="radio" 
-            name="q${questionNumber}" 
-            value="${newIdx}" 
-            required 
-          />
-          ${opt.text}
-        </label>
-      `)   // ← back‑tick di apertura
+      .map(
+        (opt, newIdx) => 
+      <label>
+        <input 
+          type="radio" 
+          name="q${questionNumber}" 
+          value="${newIdx}" 
+          required 
+        />
+        ${opt.text}
+      </label>
+      )
       .join("");
-// 4)
-   div.innerHTML = `
-      <h3>Domanda ${questionNumber}: ${q.question}</h3>
-      ${optionsHtml}
-    `;    // ← back‑tick di chiusura
 
+    // 4. Inserisci domanda + opzioni nel div e lo appendi
+    div.innerHTML = <h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml};
     quizForm.appendChild(div);
   });
 
