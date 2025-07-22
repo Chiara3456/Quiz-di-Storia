@@ -69,10 +69,10 @@
 </head>
 <body>
   <!-- Musica di sottofondo: -->
- <audio id="bg-music" loop>
-  <source src="battle.mp3" type="audio/mpeg" />
-  Il tuo browser non supporta l'audio HTML5.
-</audio>
+  <audio autoplay loop>
+    <source src="battle.mp3" type="audio/mpeg" />
+    Il tuo browser non supporta l'audio HTML5.
+  </audio>
 
 <button
   onclick="document.getElementById('bg-music').play()"
@@ -86,10 +86,11 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-  "
+ "
 >
-  Ascolta la musica
+Ascolta la musica
 </button>
+
   <header>
     <h1>Quiz di Storia</h1>
     <!-- Inserisci qui la tua immagine iniziale (sostituisci immagine.jpg con il tuo file) -->
@@ -165,6 +166,7 @@
       { question: "Quale popolo germanico fondò il Regno dei Franchi?", options: ["I Franchi", "I Longobardi", "I Visigoti"], correct: 0, explanation: "I Franchi erano un popolo germanico che fondò un regno in Europa occidentale." },
       { question: "Qual era la lingua ufficiale nell'Impero Carolingio?", options: ["Il latino", "Il greco", "L'arabo"], correct: 0, explanation: "Il latino era la lingua ufficiale dell'Impero Carolingio, usata per la cultura e la religione." }
     ];
+
     const questionsPerPage = 10;
     let currentPage = 0;
     let answers = [];
@@ -293,6 +295,3 @@ function submitQuiz() {
   </script>
 </body>
 </html>
-
-
-    
