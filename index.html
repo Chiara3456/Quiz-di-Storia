@@ -217,7 +217,7 @@
     // 3. Costruisci l’HTML delle opzioni
     const optionsHtml = optionsWithIndex
       .map(
-        (opt, newIdx) => `
+        (opt, newIdx) => 
           <label>
             <input 
               type="radio" 
@@ -227,13 +227,13 @@
             />
             ${opt.text}
           </label>
-        `
+        
       )
   )
   .join("");
 
     // 4. Inserisci domanda + opzioni nel div e lo appendi
-  div.innerHTML = `<h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml}`;
+  div.innerHTML = <h3>Domanda ${questionNumber}: ${q.question}</h3>${optionsHtml};
     quizForm.appendChild(div);
   });
 
@@ -252,10 +252,10 @@
   const end = Math.min(start + questionsPerPage, quizData.length);
 
   for(let i = start + 1; i <= end; i++) {
-   const radios = document.getElementsByName(`q${i}`);
+   const radios = document.getElementsByName(q${i});
     const answered = [...radios].some(radio => radio.checked);
     if (!answered) {
-      alert(`Per favore, rispondi alla domanda ${i}.`);
+      alert(Per favore, rispondi alla domanda ${i}.);
       return false;
     }
   }
@@ -270,7 +270,7 @@ function nextPage() {
   const start = currentPage * questionsPerPage;
   const end = Math.min(start + questionsPerPage, quizData.length);
   for(let i = start + 1; i <= end; i++) {
- const radios = document.getElementsByName(`q${i}`);
+ const radios = document.getElementsByName(q${i});
     radios.forEach(radio => {
       if (radio.checked) {
         answers[i - 1] = parseInt(radio.value);
@@ -289,7 +289,7 @@ function submitQuiz() {
   const start = currentPage * questionsPerPage;
   const end = Math.min(start + questionsPerPage, quizData.length);
   for(let i = start + 1; i <= end; i++) {
-const radios = document.getElementsByName(`q${i}`));
+const radios = document.getElementsByName(q${i}));
     radios.forEach(radio => {
       if (radio.checked) {
         answers[i - 1] = parseInt(radio.value);
@@ -312,11 +312,11 @@ const radios = document.getElementsByName(`q${i}`));
   nextBtn.style.display = "none";
   submitBtn.style.display = "none";
 
- resultDiv.innerHTML = `
+ resultDiv.innerHTML = 
   Hai totalizzato ${score} risposte corrette su ${quizData.length}.
   ${score === quizData.length ? "<br>Complimenti, hai risposto correttamente a tutte le domande!" : ""}
   ${explanations}
-`;
+;
 }
   </script>
 </body>
